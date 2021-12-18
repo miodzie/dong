@@ -1,8 +1,12 @@
-# dong c( ⁰ 〰 ⁰ )੭
-Scrapes and makes dongs readily available in your terminal!
+# dong ٩ʕ◕౪◕ʔو
+Makes fun ASCII emojis readily available in your terminal!
 
+Faces are scraped from http://dongerlist.com/
 
 # Getting Started
+## Prerequisite
+You'll need to have sqlite3 installed first.
+
 ## Installing
 `go get github.com/miodzie/dong`
 
