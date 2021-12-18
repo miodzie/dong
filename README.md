@@ -1,5 +1,5 @@
 # dong ٩ʕ◕౪◕ʔو
-Makes fun ASCII emojis readily available in your terminal!
+Make fun ASCII emojis readily available in your terminal!
 
 Faces are scraped from http://dongerlist.com/
 
