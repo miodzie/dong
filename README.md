@@ -8,7 +8,7 @@ Faces are scraped from http://dongerlist.com/
 You'll need to have sqlite3 installed first.
 
 ## Installing
-`go get github.com/miodzie/dong`
+`go install github.com/miodzie/dong`
 
 
 ## You'll have to get some dongs downloaded before you can start:
