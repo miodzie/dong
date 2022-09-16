@@ -3,7 +3,11 @@ package interactors
 import "github.com/miodzie/dong/domain"
 
 type RandomDong struct {
-	random domain.RandomDonger
+	repository domain.Repository
+}
+
+func NewRandomDongInteractor(repo domain.Repository) *RandomDong {
+	return &RandomDong{repository: repo}
 }
 
 type RandomDongReq struct {
@@ -20,9 +24,9 @@ func (r RandomDong) Handle(req RandomDongReq) RandomDongResp {
 	var err error
 	// Maybe just bake this in with the random, I don't like the if else.
 	if req.Category != "" {
-		dong, err = r.random.DongByCategory(req.Category)
+		dong, err = r.repository.RandomByCategory(req.Category)
 	} else {
-		dong, err = r.random.Dong()
+		dong, err = r.repository.Random()
 	}
 
 	return RandomDongResp{

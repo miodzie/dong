@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"os/user"
-	"path"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -15,29 +13,6 @@ import (
 )
 
 var db *gorm.DB
-
-func init() {
-	usr, err := user.Current()
-	workDir := path.Join(usr.HomeDir, ".dong")
-
-	if _, err := os.Stat(workDir); os.IsNotExist(err) {
-		err := os.Mkdir(workDir, os.ModePerm)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	db, err = gorm.Open("sqlite3", path.Join(workDir, "dongs.db"))
-	if err != nil {
-		fmt.Println(err)
-		panic("failed to connect database")
-	}
-	err = impl.Initialize(db)
-	if err != nil {
-		panic(err)
-	}
-	db.AutoMigrate(&impl.Dong{})
-}
 
 var dongCmd = &cobra.Command{
 	Args:  cobra.ArbitraryArgs,

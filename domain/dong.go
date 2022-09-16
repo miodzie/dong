@@ -6,17 +6,9 @@ type Dong struct {
 	Author   string
 }
 
-type RandomDonger interface {
-	Dong() (Dong, error)
-	DongByCategory(string) (Dong, error)
-}
-
-type DongRepository interface {
-	Count() (int64, error)
-	CountWithCategory(string) (int64, error)
-	Categories() ([]string, error)
-	ByCategory(string) ([]Dong, error)
-	ById(int64)
+type Repository interface {
+	Random() (Dong, error)
+	RandomByCategory(string) (Dong, error)
 }
 
 func (d Dong) String() string {
