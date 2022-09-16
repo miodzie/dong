@@ -1,4 +1,4 @@
-package core
+package impl
 
 import "github.com/jinzhu/gorm"
 

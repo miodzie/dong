@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/miodzie/dong/core"
+	"github.com/miodzie/dong/impl"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +17,7 @@ var countCmd = &cobra.Command{
 	Long:  `Print the amount of dongs you have stored!`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var count int
-		db.Model(&core.Dong{}).Count(&count)
+		db.Model(&impl.Dong{}).Count(&count)
 		fmt.Println(count)
 	},
 }

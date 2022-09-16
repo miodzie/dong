@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/miodzie/dong/core"
+	"github.com/miodzie/dong/impl"
 	"github.com/spf13/cobra"
 )
 
@@ -17,7 +17,7 @@ var catCmd = &cobra.Command{
 	Short: "Shows available categories.",
 	Long:  `Shows available categories.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		rows, err := db.Model(&core.Dong{}).Select("category").Group("category").Rows()
+		rows, err := db.Model(&impl.Dong{}).Select("category").Group("category").Rows()
 		if err != nil {
 			panic(err)
 		}

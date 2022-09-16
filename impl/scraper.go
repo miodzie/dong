@@ -1,4 +1,4 @@
-package core
+package impl
 
 import (
 	"fmt"
@@ -69,7 +69,6 @@ func (s *Scraper) Run() error {
 	return nil
 }
 
-// Some helper method ...
 func FetchDocument(url string) (*goquery.Document, error) {
 	r, err := http.Get(url)
 

@@ -1,6 +1,8 @@
-package core
+package impl
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Dong struct {
 	gorm.Model

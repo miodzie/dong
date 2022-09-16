@@ -10,7 +10,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"github.com/miodzie/dong/core"
+	"github.com/miodzie/dong/impl"
 	"github.com/spf13/cobra"
 )
 
@@ -32,11 +32,11 @@ func init() {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
-	err = core.Initialize(db)
+	err = impl.Initialize(db)
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&core.Dong{})
+	db.AutoMigrate(&impl.Dong{})
 }
 
 var dongCmd = &cobra.Command{
@@ -46,7 +46,7 @@ var dongCmd = &cobra.Command{
 	Long:  `Print a random dong.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var ids []int
-		qb := db.Model(&core.Dong{}).Select("id")
+		qb := db.Model(&impl.Dong{}).Select("id")
 		if len(args) != 0 {
 			qb = qb.Where("category IN (?)", args)
 		}
@@ -74,13 +74,13 @@ var dongCmd = &cobra.Command{
 				break
 			}
 		}
-		qb = db.Model(&core.Dong{}).Where("id = ?", id)
+		qb = db.Model(&impl.Dong{}).Where("id = ?", id)
 
 		if len(args) != 0 {
 			qb = qb.Where("category IN (?)", args)
 		}
 
-		var dong core.Dong
+		var dong impl.Dong
 		qb.First(&dong)
 		fmt.Println(dong)
 	},
