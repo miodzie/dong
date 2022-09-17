@@ -3,7 +3,6 @@ package dong
 type Emoji struct {
 	Text     string
 	Category string
-	Author   string
 }
 
 type Repository interface {
@@ -11,6 +10,7 @@ type Repository interface {
 	RandomByCategory(string) (Emoji, error)
 	Count() int64
 	Categories() ([]string, error)
+	Save([]Emoji) error
 }
 
 func (d Emoji) String() string {

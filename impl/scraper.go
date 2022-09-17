@@ -2,6 +2,8 @@ package impl
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
+	"github.com/miodzie/dong"
 	"net/http"
 	"strconv"
 	"strings"
@@ -9,13 +11,22 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const DONGERLIST = "http://dongerlist.com"
+
+var db *gorm.DB
+
 type Scraper struct {
 	Domain     string
 	Categories []string
-	Limit      uint
+}
+
+func (s *Scraper) Fetch() ([]dong.Emoji, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 func (s *Scraper) Run() error {
+
 	doc, err := FetchDocument(s.Domain)
 	if err != nil {
 		return err

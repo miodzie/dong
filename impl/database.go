@@ -5,9 +5,6 @@ import (
 	"github.com/miodzie/dong"
 )
 
-// TODO: DELETE ME AND REFACTOR SCRAPER!
-var db *gorm.DB
-
 func NewGormRepository(database *gorm.DB) *GormRepository {
 	database.AutoMigrate(&Dong{})
 	return &GormRepository{db: database}
@@ -54,4 +51,15 @@ func (g GormRepository) Categories() ([]string, error) {
 	}
 
 	return cats, nil
+}
+
+func (g GormRepository) Save(emojis []dong.Emoji) error {
+	var dongs []Dong
+	for _, emoji := range emojis {
+		// TODO: Insert ignore.
+		dongs = append(dongs, Dong{Dong: emoji.Text, Category: emoji.Category})
+	}
+	g.db.Create(dongs)
+
+	return nil
 }
