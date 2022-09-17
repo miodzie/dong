@@ -1,52 +1,111 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/miodzie/dong/impl"
 	"github.com/miodzie/dong/interactors"
-	"os"
 	"strings"
 )
 
-// TODO: add command struct and help command.
-var commands map[string]func()
+type command struct {
+	cmd         string
+	description string
+	handle      func(args []string) error
+}
+
+var commands map[string]command
 
 func init() {
-	commands = make(map[string]func())
-	commands["count"] = func() {
-		fmt.Println(repository.Count())
-		os.Exit(0)
+	commands = make(map[string]command)
+	commands["count"] = command{
+		cmd:         "count",
+		description: "Display the amount of dongs available.",
+		handle: func(args []string) error {
+			fmt.Println(repository.Count())
+			return nil
+		},
 	}
-	// categories
-	commands["cat"] = func() {
-		cats, err := repository.Categories()
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(strings.Join(cats, ", "))
-		os.Exit(0)
+	commands["cat"] = command{
+		cmd:         "cat",
+		description: "Display available categories to use. e.g. `dong happy`",
+		handle: func(args []string) error {
+			cats, err := repository.Categories()
+			if err != nil {
+				return err
+			}
+			fmt.Println(strings.Join(cats, ", "))
+
+			return nil
+		},
 	}
-	commands["scrape"] = func() {
-		exec := interactors.NewScrapeDongsInteractor(impl.NewScraper(), repository)
-		resp := exec.Handle()
-		if resp.Error != nil {
-			panic(resp.Error)
-		}
-		fmt.Println(resp.Message)
+	commands["scrape"] = command{
+		cmd:         "scrape",
+		description: "Web scrape fresh dongs off the press from dongerlist.com",
+		handle: func(args []string) error {
+			exec := interactors.NewScrapeDongsInteractor(impl.NewScraper(), repository)
+			resp := exec.Handle()
+			if resp.Error != nil {
+				return resp.Error
+			}
+			fmt.Println(resp.Message)
+
+			return nil
+		},
 	}
-	commands["version"] = func() {
-		fmt.Println("ヽ༼ຈل͜ຈ༽ﾉ FOREVER DONG ヽ༼ຈل͜ຈ༽ﾉ")
-		os.Exit(0)
+	commands["version"] = command{
+		cmd:         "version",
+		description: "Display the version of the dong program.",
+		handle: func(args []string) error {
+			fmt.Println("ヽ༼ຈل͜ຈ༽ﾉ FOREVER DONG ヽ༼ຈل͜ຈ༽ﾉ")
+			return nil
+		},
+	}
+	commands["help"] = command{
+		cmd:         "help",
+		description: "Display helpful resources?",
+		handle: func(args []string) error {
+			if len(args) > 1 {
+				if cmd, ok := commands[args[1]]; ok {
+					fmt.Println(cmd.description)
+					return nil
+				}
+				return errors.New(fmt.Sprintf("Unknown command: `%s`\n", args[1]))
+			}
+			var keys []string
+			for k := range commands {
+				keys = append(keys, k)
+			}
+			fmt.Println(strings.Join(keys, ", "))
+			fmt.Println("Type `help command` for more info.")
+			return nil
+		},
 	}
 }
 
-func handleCommands(args []string) {
+func handleCommands(args []string) error {
 	if len(args) == 0 {
-		return
+		return printRandomDong(args)
 	}
 	cmd, ok := commands[args[0]]
 	if !ok {
-		return
+		return printRandomDong(args)
 	}
-	cmd()
+	return cmd.handle(args)
+}
+
+func printRandomDong(args []string) error {
+	req := interactors.RandomDongReq{}
+	if len(args) > 0 {
+		req.Category = args[0]
+	}
+	controller := interactors.NewRandomDongInteractor(repository)
+	resp := controller.Handle(req)
+	if resp.Error != nil {
+		return resp.Error
+	}
+
+	fmt.Println(resp.Emoji)
+
+	return nil
 }

@@ -6,7 +6,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/miodzie/dong"
 	"github.com/miodzie/dong/impl"
-	"github.com/miodzie/dong/interactors"
 	"os"
 	"os/user"
 	"path"
@@ -26,25 +25,7 @@ func run(args []string) error {
 	createWorkDir()
 	initDatabase()
 
-	handleCommands(args)
-
-	return printRandomDong(args)
-}
-
-func printRandomDong(args []string) error {
-	req := interactors.RandomDongReq{}
-	if len(args) > 0 {
-		req.Category = args[0]
-	}
-	controller := interactors.NewRandomDongInteractor(repository)
-	resp := controller.Handle(req)
-	if resp.Error != nil {
-		return resp.Error
-	}
-
-	fmt.Println(resp.Emoji)
-
-	return nil
+	return handleCommands(args)
 }
 
 func createWorkDir() {
