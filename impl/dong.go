@@ -2,18 +2,19 @@ package impl
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/miodzie/dong/domain"
+	"github.com/miodzie/dong"
 )
 
+// Dong TODO: Migrate column names?
 type Dong struct {
 	gorm.Model
 	Dong     string
 	Category string
 }
 
-func (d Dong) ToDomainDong() domain.Dong {
-	return domain.Dong{
-		Emoji:    d.Dong,
+func (d Dong) ToDomainDong() dong.Emoji {
+	return dong.Emoji{
+		Text:     d.Dong,
 		Category: d.Category,
 	}
 }

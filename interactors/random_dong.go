@@ -1,14 +1,14 @@
 package interactors
 
 import (
-	"github.com/miodzie/dong/domain"
+	"github.com/miodzie/dong"
 )
 
 type RandomDong struct {
-	repository domain.Repository
+	repository dong.Repository
 }
 
-func NewRandomDongInteractor(repo domain.Repository) *RandomDong {
+func NewRandomDongInteractor(repo dong.Repository) *RandomDong {
 	return &RandomDong{repository: repo}
 }
 
@@ -22,17 +22,17 @@ type RandomDongResp struct {
 }
 
 func (r RandomDong) Handle(req RandomDongReq) RandomDongResp {
-	var dong domain.Dong
+	var ding dong.Emoji
 	var err error
 	// Maybe just bake this in with the random, I don't like the if else.
 	if req.Category != "" {
-		dong, err = r.repository.RandomByCategory(req.Category)
+		ding, err = r.repository.RandomByCategory(req.Category)
 	} else {
-		dong, err = r.repository.Random()
+		ding, err = r.repository.Random()
 	}
 
 	return RandomDongResp{
-		Emoji: dong.Emoji,
+		Emoji: ding.Text,
 		Error: err,
 	}
 }
