@@ -13,7 +13,7 @@ func NewRandomDongInteractor(repo dong.Repository) *RandomDong {
 }
 
 type RandomDongReq struct {
-	Category string // Optional
+	Category string
 }
 
 type RandomDongResp struct {
@@ -22,17 +22,13 @@ type RandomDongResp struct {
 }
 
 func (r RandomDong) Handle(req RandomDongReq) RandomDongResp {
-	var ding dong.Emoji
-	var err error
-	// Maybe just bake this in with the random, I don't like the if else.
+	var emoji dong.Emoji
+	var resp RandomDongResp
 	if req.Category != "" {
-		ding, err = r.repository.RandomByCategory(req.Category)
-	} else {
-		ding, err = r.repository.Random()
+		emoji, resp.Error = r.repository.RandomByCategory(req.Category)
+		return RandomDongResp{Emoji: emoji.Text}
 	}
 
-	return RandomDongResp{
-		Emoji: ding.Text,
-		Error: err,
-	}
+	emoji, resp.Error = r.repository.Random()
+	return RandomDongResp{Emoji: emoji.Text}
 }

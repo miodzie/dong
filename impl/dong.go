@@ -5,9 +5,8 @@ import (
 	"github.com/miodzie/dong"
 )
 
-// Dong TODO: Migrate column names?
+// TODO: At some point remove gorm.
 type Dong struct {
-	// TODO: At some point remove gorm.
 	gorm.Model
 	Dong     string
 	Category string
