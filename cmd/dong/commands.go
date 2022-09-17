@@ -9,7 +9,6 @@ import (
 )
 
 // TODO: add command struct and help command.
-
 var commands map[string]func()
 
 func init() {

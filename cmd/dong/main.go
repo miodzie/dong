@@ -13,8 +13,6 @@ import (
 )
 
 var workDir string
-
-// Technically I shouldn't really expose this but bruh
 var repository dong.Repository
 
 func main() {
@@ -26,20 +24,24 @@ func main() {
 
 func run(args []string) error {
 	createWorkDir()
-	repository = initDatabase()
+	initDatabase()
 
 	handleCommands(args)
 
-	// Fallthrough to default printing of random dong.
-	controller := interactors.NewRandomDongInteractor(repository)
+	return printRandomDong(args)
+}
+
+func printRandomDong(args []string) error {
 	req := interactors.RandomDongReq{}
 	if len(args) > 0 {
 		req.Category = args[0]
 	}
+	controller := interactors.NewRandomDongInteractor(repository)
 	resp := controller.Handle(req)
 	if resp.Error != nil {
 		return resp.Error
 	}
+
 	fmt.Println(resp.Emoji)
 
 	return nil
@@ -60,12 +62,12 @@ func createWorkDir() {
 	}
 }
 
-func initDatabase() *impl.GormRepository {
+func initDatabase() {
 	db, err := gorm.Open("sqlite3", path.Join(workDir, "dongs.db"))
 	if err != nil {
 		fmt.Println(err)
 		panic("failed to connect database")
 	}
 
-	return impl.NewGormRepository(db)
+	repository = impl.NewGormRepository(db)
 }
