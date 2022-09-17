@@ -1,10 +1,5 @@
 package dong
 
-type Emoji struct {
-	Text     string
-	Category string
-}
-
 // Fetcher fetches dongs in any fashion desired.
 // There is a default Web Scraper implementation of this from
 // http://dongerlist.com in the commandline package.
@@ -19,6 +14,11 @@ type Repository interface {
 	Count() int64
 	Categories() ([]string, error)
 	Save([]Emoji) error
+}
+
+type Emoji struct {
+	Text     string
+	Category string
 }
 
 func (d Emoji) String() string {
