@@ -12,32 +12,23 @@ import (
 
 const DONGERLIST = "http://dongerlist.com"
 
-func NewScraper() *Scraper {
-	return &Scraper{domain: DONGERLIST}
+func NewScraper() *WebFetcher {
+	return &WebFetcher{domain: DONGERLIST}
 }
 
-type Scraper struct {
-	domain     string
-	categories []string
+type WebFetcher struct {
+	domain string
 }
 
-func (s *Scraper) Fetch() ([]dong.Emoji, error) {
+func (s *WebFetcher) Fetch() ([]dong.Emoji, error) {
 	var dongs []dong.Emoji
 	doc, err := s.fetchDocument(s.domain)
 	if err != nil {
 		return dongs, err
 	}
-	if len(s.categories) == 0 {
-		doc.Find(".list-2-anchor").Each(func(i int, selection *goquery.Selection) {
-			category := selection.AttrOr("href", "")
-			if category != "" {
-				split := strings.Split(category, "/")
-				s.categories = append(s.categories, split[len(split)-1])
-			}
-		})
-	}
+	categories := findCategories(doc)
 
-	for _, category := range s.categories {
+	for _, category := range categories {
 		fmt.Println("Scraping: " + s.domain + "/category/" + category)
 		page, err := s.fetchDocument(s.domain + "/category/" + category)
 		if err != nil {
@@ -62,6 +53,7 @@ func (s *Scraper) Fetch() ([]dong.Emoji, error) {
 						emoji.Text = dng.Text()
 						emoji.Category = category
 						dongs = append(dongs, emoji)
+						fmt.Printf("new dong: %s !!\n", emoji)
 					}
 				})
 			}
@@ -72,7 +64,20 @@ func (s *Scraper) Fetch() ([]dong.Emoji, error) {
 	return dongs, nil
 }
 
-func (s *Scraper) fetchDocument(url string) (*goquery.Document, error) {
+func findCategories(doc *goquery.Document) []string {
+	var categories []string
+	doc.Find(".list-2-anchor").Each(func(i int, selection *goquery.Selection) {
+		category := selection.AttrOr("href", "")
+		if category != "" {
+			split := strings.Split(category, "/")
+			categories = append(categories, split[len(split)-1])
+		}
+	})
+
+	return categories
+}
+
+func (s *WebFetcher) fetchDocument(url string) (*goquery.Document, error) {
 	r, err := http.Get(url)
 
 	if err != nil {
