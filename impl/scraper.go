@@ -2,7 +2,6 @@ package impl
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"github.com/miodzie/dong"
 	"net/http"
 	"strconv"
@@ -13,39 +12,36 @@ import (
 
 const DONGERLIST = "http://dongerlist.com"
 
-var db *gorm.DB
+func NewScraper() *Scraper {
+	return &Scraper{domain: DONGERLIST}
+}
 
 type Scraper struct {
-	Domain     string
-	Categories []string
+	domain     string
+	categories []string
 }
 
 func (s *Scraper) Fetch() ([]dong.Emoji, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (s *Scraper) Run() error {
-
-	doc, err := FetchDocument(s.Domain)
+	var dongs []dong.Emoji
+	doc, err := s.fetchDocument(s.domain)
 	if err != nil {
-		return err
+		return dongs, err
 	}
-	if len(s.Categories) == 0 {
+	if len(s.categories) == 0 {
 		doc.Find(".list-2-anchor").Each(func(i int, selection *goquery.Selection) {
 			category := selection.AttrOr("href", "")
 			if category != "" {
 				split := strings.Split(category, "/")
-				s.Categories = append(s.Categories, split[len(split)-1])
+				s.categories = append(s.categories, split[len(split)-1])
 			}
 		})
 	}
 
-	for _, cat := range s.Categories {
-		fmt.Println("Scraping: " + s.Domain + "/category/" + cat)
-		page, err := FetchDocument(s.Domain + "/category/" + cat)
+	for _, category := range s.categories {
+		fmt.Println("Scraping: " + s.domain + "/category/" + category)
+		page, err := s.fetchDocument(s.domain + "/category/" + category)
 		if err != nil {
-			return err
+			return dongs, err
 		}
 		tot := page.Find(".last").First().Text()
 		if tot == "" {
@@ -55,21 +51,17 @@ func (s *Scraper) Run() error {
 		totalPages, err := strconv.Atoi(tot)
 		fmt.Println("TOTS:" + strconv.Itoa(totalPages))
 		if err != nil {
-			return err
+			return dongs, err
 		}
 
 		for i := 1; i <= totalPages; i++ {
 			if i == 1 {
 				page.Find(".donger").Each(func(i int, dng *goquery.Selection) {
 					if dng.Text() != "" {
-						dong := &Dong{}
-						db.Where("dong = ?", dong.Dong).First(&dong)
-						if dong.Dong == "" {
-							dong.Dong = dng.Text()
-							dong.Category = cat
-							db.Create(&dong)
-							fmt.Println("New dong created: " + dong.Dong)
-						}
+						emoji := dong.Emoji{}
+						emoji.Text = dng.Text()
+						emoji.Category = category
+						dongs = append(dongs, emoji)
 					}
 				})
 			}
@@ -77,10 +69,10 @@ func (s *Scraper) Run() error {
 
 	}
 
-	return nil
+	return dongs, nil
 }
 
-func FetchDocument(url string) (*goquery.Document, error) {
+func (s *Scraper) fetchDocument(url string) (*goquery.Document, error) {
 	r, err := http.Get(url)
 
 	if err != nil {

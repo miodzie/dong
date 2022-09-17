@@ -28,7 +28,7 @@ func run(args []string) error {
 	createWorkDir()
 	repository = initDatabase()
 
-	checkForOtherCommands(args)
+	handleCommands(args)
 
 	// Fallthrough to default printing of random dong.
 	controller := interactors.NewRandomDongInteractor(repository)

@@ -1,14 +1,27 @@
 package interactors
 
-import "github.com/miodzie/dong"
+import (
+	"fmt"
+	"github.com/miodzie/dong"
+)
 
 type Scrape struct {
 	fetcher    dong.Fetcher
 	repository dong.Repository
 }
 
+func NewScrapeDongsInteractor(
+	fetcher dong.Fetcher,
+	repository dong.Repository) *Scrape {
+	return &Scrape{
+		fetcher:    fetcher,
+		repository: repository,
+	}
+}
+
 type ScrapeResp struct {
-	Error error
+	Message string
+	Error   error
 }
 
 func (s Scrape) Handle() ScrapeResp {
@@ -20,6 +33,7 @@ func (s Scrape) Handle() ScrapeResp {
 	err = s.repository.Save(dongs)
 
 	return ScrapeResp{
-		Error: nil,
+		Message: fmt.Sprintf("%d new dongs created!", len(dongs)),
+		Error:   nil,
 	}
 }
