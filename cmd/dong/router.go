@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/miodzie/dong/impl"
 	"os"
+	"strings"
 )
 
 var commands map[string]func()
@@ -14,19 +15,14 @@ func init() {
 		fmt.Println(repository.Count())
 		os.Exit(0)
 	}
-	commands["category"] = func() {
-		//rows, err := db.Model(&impl.Dong{}).Select("category").Group("category").Rows()
-		//if err != nil {
-		//	panic(err)
-		//}
-		//var cat []string
-		//for rows.Next() {
-		//	var cate string
-		//	rows.Scan(&cate)
-		//	cat = append(cat, cate)
-		//}
-		//fmt.Println(strings.Join(cat[1:], ", "))
-		//os.Exit(0)
+	// categories
+	commands["cat"] = func() {
+		cats, err := repository.Categories()
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(strings.Join(cats, ", "))
+		os.Exit(0)
 	}
 	commands["scrape"] = func() {
 		scraper := &impl.Scraper{Domain: "http://dongerlist.com"}

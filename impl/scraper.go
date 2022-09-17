@@ -2,15 +2,12 @@ package impl
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
-
-var db *gorm.DB
 
 type Scraper struct {
 	Domain     string

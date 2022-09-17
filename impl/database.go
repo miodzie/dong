@@ -5,8 +5,10 @@ import (
 	"github.com/miodzie/dong"
 )
 
-func NewGormRepository(database *gorm.DB) *GormRepository {
+// TODO: DELETE ME AND REFACTOR SCRAPER!
+var db *gorm.DB
 
+func NewGormRepository(database *gorm.DB) *GormRepository {
 	database.AutoMigrate(&Dong{})
 	return &GormRepository{db: database}
 }
@@ -37,4 +39,19 @@ func (g GormRepository) Count() int64 {
 	var count int64
 	g.db.Model(&Dong{}).Count(&count)
 	return count
+}
+
+func (g GormRepository) Categories() ([]string, error) {
+	var cats []string
+	rows, err := g.db.Model(&Dong{}).Select("category").Group("category").Rows()
+	if err != nil {
+		return cats, err
+	}
+	for rows.Next() {
+		var c string
+		rows.Scan(&c)
+		cats = append(cats, c)
+	}
+
+	return cats, nil
 }

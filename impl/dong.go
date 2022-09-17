@@ -7,6 +7,7 @@ import (
 
 // Dong TODO: Migrate column names?
 type Dong struct {
+	// TODO: At some point remove gorm.
 	gorm.Model
 	Dong     string
 	Category string

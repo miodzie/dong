@@ -10,6 +10,7 @@ type Repository interface {
 	Random() (Emoji, error)
 	RandomByCategory(string) (Emoji, error)
 	Count() int64
+	Categories() ([]string, error)
 }
 
 func (d Emoji) String() string {

@@ -4,7 +4,7 @@ Scrapes and makes dongs readily available in your terminal!
 
 # Getting Started
 ## Installing
-`go get github.com/miodzie/dong`
+`go install github.com/miodzie/dong`
 
 
 ## You'll have to get some dongs downloaded before you can start:
