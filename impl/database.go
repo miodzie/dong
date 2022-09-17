@@ -54,9 +54,8 @@ func (g GormRepository) Categories() ([]string, error) {
 }
 
 func (g GormRepository) Save(emojis []dong.Emoji) error {
-	// Batch inserts weren't working.. Sad!
+	// TODO: Insert ignore.
 	for _, emoji := range emojis {
-		// TODO: Insert ignore.
 		g.db.Model(&Dong{}).Create(&Dong{Dong: emoji.Text, Category: emoji.Category})
 	}
 
