@@ -1,6 +1,8 @@
 package interactors
 
-import "github.com/miodzie/dong/domain"
+import (
+	"github.com/miodzie/dong/domain"
+)
 
 type RandomDong struct {
 	repository domain.Repository
