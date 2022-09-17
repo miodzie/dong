@@ -6,6 +6,7 @@ import (
 )
 
 func NewGormRepository(database *gorm.DB) *GormRepository {
+
 	database.AutoMigrate(&Dong{})
 	return &GormRepository{db: database}
 }
