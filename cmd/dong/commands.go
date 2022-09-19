@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/miodzie/dong/impl"
-	"github.com/miodzie/dong/interactors"
+	"github.com/miodzie/dong/usecases"
 	"strings"
 )
 
@@ -43,7 +43,7 @@ func init() {
 		cmd:         "scrape",
 		description: "Web scrape fresh dongs off the press from dongerlist.com",
 		handle: func(args []string) error {
-			exec := interactors.NewScrapeDongsInteractor(impl.NewScraper(), repository)
+			exec := usecases.NewScrapeDongsInteractor(impl.NewScraper(), repository)
 			resp := exec.Handle()
 			if resp.Error != nil {
 				return resp.Error
@@ -95,11 +95,11 @@ func handleCommands(args []string) error {
 }
 
 func printRandomDong(args []string) error {
-	req := interactors.RandomDongReq{}
+	req := usecases.RandomDongReq{}
 	if len(args) > 0 {
 		req.Category = args[0]
 	}
-	controller := interactors.NewRandomDongInteractor(repository)
+	controller := usecases.NewRandomDongInteractor(repository)
 	resp := controller.Handle(req)
 	if resp.Error != nil {
 		return resp.Error
