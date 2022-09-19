@@ -43,7 +43,7 @@ func init() {
 		cmd:         "scrape",
 		description: "Web scrape fresh dongs off the press from dongerlist.com",
 		handle: func(args []string) error {
-			exec := usecases.NewScrapeDongsInteractor(impl.NewScraper(), repository)
+			exec := usecases.NewScrapeDongsUseCase(impl.NewScraper(), repository)
 			resp := exec.Handle()
 			if resp.Error != nil {
 				return resp.Error
@@ -99,7 +99,7 @@ func printRandomDong(args []string) error {
 	if len(args) > 0 {
 		req.Category = args[0]
 	}
-	controller := usecases.NewRandomDongInteractor(repository)
+	controller := usecases.NewRandomDongUseCase(repository)
 	resp := controller.Handle(req)
 	if resp.Error != nil {
 		return resp.Error

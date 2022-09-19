@@ -10,7 +10,7 @@ type Scrape struct {
 	repository dong.Repository
 }
 
-func NewScrapeDongsInteractor(
+func NewScrapeDongsUseCase(
 	fetcher dong.Fetcher,
 	repository dong.Repository) *Scrape {
 	return &Scrape{

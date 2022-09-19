@@ -8,7 +8,7 @@ type RandomDong struct {
 	repository dong.Repository
 }
 
-func NewRandomDongInteractor(repo dong.Repository) *RandomDong {
+func NewRandomDongUseCase(repo dong.Repository) *RandomDong {
 	return &RandomDong{repository: repo}
 }
 
