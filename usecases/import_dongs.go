@@ -5,34 +5,34 @@ import (
 	"github.com/miodzie/dong"
 )
 
-type Scrape struct {
+type ImportDongs struct {
 	fetcher    dong.Fetcher
 	repository dong.Repository
 }
 
-func NewScrapeDongsUseCase(
+func NewImportDongs(
 	fetcher dong.Fetcher,
-	repository dong.Repository) *Scrape {
-	return &Scrape{
+	repository dong.Repository) *ImportDongs {
+	return &ImportDongs{
 		fetcher:    fetcher,
 		repository: repository,
 	}
 }
 
-type ScrapeResp struct {
+type ImportDongsResponse struct {
 	Message string
 	Error   error
 }
 
-func (s Scrape) Handle() ScrapeResp {
+func (s ImportDongs) Import() ImportDongsResponse {
 	dongs, err := s.fetcher.Fetch()
 	if err != nil {
-		return ScrapeResp{Error: err}
+		return ImportDongsResponse{Error: err}
 	}
 
 	err = s.repository.Save(dongs)
 
-	return ScrapeResp{
+	return ImportDongsResponse{
 		Message: fmt.Sprintf("%d new dongs created!", len(dongs)),
 		Error:   nil,
 	}

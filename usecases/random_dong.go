@@ -8,27 +8,24 @@ type RandomDong struct {
 	repository dong.Repository
 }
 
-func NewRandomDongUseCase(repo dong.Repository) *RandomDong {
+func NewRandomDong(repo dong.Repository) *RandomDong {
 	return &RandomDong{repository: repo}
 }
 
-type RandomDongReq struct {
+type RandomDongRequest struct {
 	Category string
 }
 
-type RandomDongResp struct {
+type RandomDongResponse struct {
 	Emoji string
-	Error error
 }
 
-func (r RandomDong) Handle(req RandomDongReq) RandomDongResp {
-	var emoji dong.Emoji
-	var resp RandomDongResp
+func (r RandomDong) Pick(req RandomDongRequest) (RandomDongResponse, error) {
 	if req.Category != "" {
-		emoji, resp.Error = r.repository.RandomByCategory(req.Category)
-		return RandomDongResp{Emoji: emoji.Text}
+		emoji, err := r.repository.RandomByCategory(req.Category)
+		return RandomDongResponse{Emoji: emoji.Text}, err
 	}
 
-	emoji, resp.Error = r.repository.Random()
-	return RandomDongResp{Emoji: emoji.Text}
+	emoji, err := r.repository.Random()
+	return RandomDongResponse{Emoji: emoji.Text}, err
 }

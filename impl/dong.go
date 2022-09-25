@@ -5,7 +5,7 @@ import (
 	"github.com/miodzie/dong"
 )
 
-// TODO: At some point remove gorm.
+// Dong TODO: At some point remove gorm.
 type Dong struct {
 	gorm.Model
 	Dong     string
